@@ -1,0 +1,18 @@
+---
+nginx::mail: false
+nginx::manage_repo: false
+
+nginx::nginx_upstreams:
+  'sonarqube-real':
+    ensure: present
+    members:
+      - 'localhost:8080'
+
+nginx::nginx_vhosts:
+  'jenkins-frontend':
+    ensure: present
+    proxy: 'http://sonarqube-real'
+    server_name:
+      - 'localhost'
+      - 'blue.spantree.net'
+
