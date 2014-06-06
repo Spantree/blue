@@ -23,7 +23,7 @@ if [ "$FOUND_GIT" -ne '0' ] && [ ! -f /var/puppet-init/librarian-puppet-installe
         yum -q -y makecache
         yum -q -y install git
     else
-        apt-get -q -y install git-core >/dev/null
+        apt-get -q -y install git-core
     fi
 
     echo 'Finished installing git'
@@ -40,7 +40,7 @@ echo "Copied Puppetfile"
 if [ "$OS" == 'debian' ] || [ "$OS" == 'ubuntu' ]; then
     if [[ ! -f /var/puppet-init/librarian-base-packages ]]; then
         echo 'Installing base packages for librarian'
-        apt-get install -y build-essential ruby-dev >/dev/null
+        apt-get install -y build-essential ruby-dev 
         echo 'Finished installing base packages for librarian'
 
         touch /var/puppet-init/librarian-base-packages
@@ -48,9 +48,9 @@ if [ "$OS" == 'debian' ] || [ "$OS" == 'ubuntu' ]; then
 fi
 
 if [ "$OS" == 'ubuntu' ]; then
-    if [[ ! -f /var/puppet-init/librarian-libgemplugin-ruby ]]; then
+    if [ "$CODENAME" == 'precise' ] && [ ! -f /var/puppet-init/librarian-libgemplugin-ruby ]; then
         echo 'Updating libgemplugin-ruby (Ubuntu only)'
-        apt-get install -y libgemplugin-ruby >/dev/null
+        apt-get install -y libgemplugin-ruby
         echo 'Finished updating libgemplugin-ruby (Ubuntu only)'
 
         touch /var/puppet-init/librarian-libgemplugin-ruby
@@ -59,8 +59,8 @@ if [ "$OS" == 'ubuntu' ]; then
     if [ "$CODENAME" == 'lucid' ] && [ ! -f /var/puppet-init/librarian-rubygems-update ]; then
         echo 'Updating rubygems (Ubuntu Lucid only)'
         echo 'Ignore all "conflicting chdir" errors!'
-        gem install rubygems-update >/dev/null
-        /var/lib/gems/1.8/bin/update_rubygems >/dev/null
+        gem install rubygems-update
+        /var/lib/gems/1.8/bin/update_rubygems
         echo 'Finished updating rubygems (Ubuntu Lucid only)'
 
         touch /var/puppet-init/librarian-rubygems-update
@@ -71,20 +71,20 @@ cd "$PUPPET_DIR"
 
 if [[ ! -f /var/puppet-init/librarian-puppet-installed ]]; then
     echo 'Installing librarian-puppet'
-    gem install librarian-puppet >/dev/null
+    gem install librarian-puppet
     echo 'Finished installing librarian-puppet'
 
     echo 'Running initial librarian-puppet'
-    librarian-puppet install --clean >/dev/null
+    librarian-puppet install --clean
     echo 'Finished running initial librarian-puppet'
 
     touch /var/puppet-init/librarian-puppet-installed
 else
-    sha1sum -c /var/puppet-init/Puppetfile.sha1 >/dev/null
+    sha1sum -c /var/puppet-init/Puppetfile.sha1
     if [[ $? > 0 ]]
     then
         echo 'Running update librarian-puppet'
-        librarian-puppet update >/dev/null
+        librarian-puppet update
         echo 'Finished running update librarian-puppet'
     else
         echo 'Skipping librarian-puppet (Puppetfile unchanged)'

@@ -1,18 +1,12 @@
 ---
 :backends: 
   - yaml
-#  - eyaml
 
 :hierarchy:
   - common
-#  - secrets
-#  - "%{::fqdn}"
+  - "%{::fqdn}"
 
 :logger: console
 
 :yaml:
   :datadir: '/usr/local/etc/puppet/hieradata'
-
-#:eyaml:
-#  :datadir: '/usr/local/etc/puppet/hieradata'
-#  :gpgpghome: '~/.gnupg'

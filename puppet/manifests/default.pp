@@ -1,3 +1,2 @@
-# hiera_include('classes', '')
-node default {
-}
+hiera_include('classes')
+

@@ -8,18 +8,20 @@ RELEASE=$(/bin/bash $SCRIPT_ROOT/os-detect.sh RELEASE)
 
 if [[ ! -f /var/puppet-init/update-puppet ]]; then
     if [ "$OS" == 'debian' ] || [ "$OS" == 'ubuntu' ]; then
-        echo "Downloading http://apt.puppetlabs.com/puppetlabs-release-${CODENAME}.deb"
-        wget --quiet --tries=5 --timeout=10 -O "/var/puppet-init/puppetlabs-release-${CODENAME}.deb" "http://apt.puppetlabs.com/puppetlabs-release-${CODENAME}.deb"
-        echo "Finished downloading http://apt.puppetlabs.com/puppetlabs-release-${CODENAME}.deb"
+       # if [ "$RELEASE" == 'precise' ]; then
+            echo "Downloading http://apt.puppetlabs.com/puppetlabs-release-${CODENAME}.deb"
+            wget --quiet --tries=5 --timeout=10 -O "/var/puppet-init/puppetlabs-release-${CODENAME}.deb" "http://apt.puppetlabs.com/puppetlabs-release-${CODENAME}.deb"
+            echo "Finished downloading http://apt.puppetlabs.com/puppetlabs-release-${CODENAME}.deb"
 
-        dpkg -i "/var/puppet-init/puppetlabs-release-${CODENAME}.deb" >/dev/null
+            dpkg -i "/var/puppet-init/puppetlabs-release-${CODENAME}.deb" > /dev/null
+       # fi
 
         echo "Running update-puppet apt-get update"
-        apt-get update >/dev/null
+        apt-get update
         echo "Finished running update-puppet apt-get update"
 
         echo "Updating Puppet to latest version"
-        apt-get -y install puppet >/dev/null
+        apt-get -y install puppet
         PUPPET_VERSION=$(puppet help | grep 'Puppet v')
         echo "Finished updating puppet to latest version: $PUPPET_VERSION"
 

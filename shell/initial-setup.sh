@@ -17,7 +17,9 @@ fi
 if [[ ! -f /var/puppet-init/initial-setup-repo-update ]]; then
     if [ "$OS" == 'debian' ] || [ "$OS" == 'ubuntu' ]; then
         echo "Running initial-setup apt-get update"
-        apt-get update >/dev/null
+        # apt-get update >/dev/null
+        apt-get update && apt-get dist-upgrade -y
+        apt-get -y autoremove
         touch /var/puppet-init/initial-setup-repo-update
         echo "Finished running initial-setup apt-get update"
     elif [[ "$OS" == 'centos' ]]; then
@@ -34,7 +36,7 @@ fi
 
 if [[ "$OS" == 'ubuntu' && ("$CODENAME" == 'lucid' || "$CODENAME" == 'precise') && ! -f /var/puppet-init/ubuntu-required-libraries ]]; then
     echo 'Installing basic curl packages (Ubuntu only)'
-    apt-get install -y curl unzip libcurl3 libcurl4-gnutls-dev >/dev/null
+    apt-get install -y curl unzip libcurl3 libcurl4-gnutls-dev 
     echo 'Finished installing basic curl packages (Ubuntu only)'
 
     touch /var/puppet-init/ubuntu-required-libraries

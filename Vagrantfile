@@ -5,7 +5,7 @@ Vagrant.require_version ">= 1.5.1"
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "spantree/ubuntu-precise-64"
+  config.vm.box = "ubuntu/trusty64"
 
   config.vm.synced_folder ".", "/usr/local/src/project", :create => "true"
   config.vm.synced_folder "puppet", "/usr/local/etc/puppet", :create => "true"
@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider :virtualbox do |v, override|
     override.vm.network :private_network, ip: "192.168.80.100"
-    v.customize ["modifyvm", :id, "--memory", 768]
+    v.customize ["modifyvm", :id, "--memory", 2048]
   end
 
   config.vm.provision :shell, :path => "shell/initial-setup.sh", :args => "/vagrant/shell"
@@ -29,8 +29,7 @@ Vagrant.configure("2") do |config|
       "--verbose",
       "--debug",
       "--modulepath=/etc/puppet/modules:/usr/local/etc/puppet/modules",
-      "--hiera_config /usr/local/src/project/hiera.yaml",
-      "--parser future"
+      "--hiera_config /usr/local/src/project/hiera.yaml"
     ]
   end
 end
