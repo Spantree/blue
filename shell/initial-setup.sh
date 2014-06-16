@@ -1,9 +1,16 @@
 #!/bin/bash
 
-SCRIPT_ROOT=$(echo "$1")
+OS=$(/bin/bash /tmp/os-detect.sh ID)
+CODENAME=$(/bin/bash /tmp/os-detect.sh CODENAME)
 
-OS=$(/bin/bash $SCRIPT_ROOT/os-detect.sh ID)
-CODENAME=$(/bin/bash $SCRIPT_ROOT/os-detect.sh CODENAME)
+while [ ! -f /var/lib/cloud/instance/boot-finished ] ; do
+  sleep 10
+  echo "sleeping for 10 seconds while cloud-init is running"
+done
+while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+  sleep 10
+  echo "Waiting while apt is ran by cloud-init"
+done
 
 if [[ ! -d /var/puppet-init/ ]]; then
     mkdir /var/puppet-init

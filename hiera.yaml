@@ -4,7 +4,6 @@
 
 :hierarchy:
   - common
-  - "%{::fqdn}"
 
 :logger: console
 

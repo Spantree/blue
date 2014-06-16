@@ -1,0 +1,13 @@
+#cloud-config
+# vim: syntax=yaml
+
+package_update: true
+
+package_upgrade: true
+
+packages:
+  - lvm2
+  - vim
+  - rsync
+  - curl
+

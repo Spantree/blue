@@ -3,6 +3,10 @@
 # Try and get debian operating system
 # id, codename, and release
 
+(
+cat <<'EOF'
+#!/bin/bash
+
 TYPE=$(echo "$1" | tr '[A-Z]' '[a-z]')
 OS=$(uname)
 ID="unknown"
@@ -27,9 +31,9 @@ if [ "$OS" == "Linux" ]; then
     elif [ -f "/etc/issue" ]; then
         ID=$(head -1 /etc/issue | cut -d " " -f1)
         if [ -f "/etc/debian_version" ]; then
-          RELEASE=$(</etc/debian_version)
+            RELEASE=$(</etc/debian_version)
         else
-          RELEASE=$(head -1 /etc/issue | cut -d " " -f2)
+            RELEASE=$(head -1 /etc/issue | cut -d " " -f2)
         fi
     fi
 fi
@@ -47,3 +51,6 @@ else
     echo -e "CODENAME\t${info[codename]}"
     echo -e "RELEASE\t${info[release]}"
 fi
+EOF
+) > /tmp/os-detect.sh
+chmod +x /tmp/os-detect.sh

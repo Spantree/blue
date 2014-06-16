@@ -1,26 +1,48 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.require_version ">= 1.5.1"
+ENV['VAGRANT_DEFAULT_PROVIDER'] = "aws"
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "dummy"
+  config.vm.provider "aws" do |aws, override|
+    aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']
+    aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+    aws.keypair_name = "otaeguis"
+
+    aws.ami = "ami-018c9568" # trusty 64 PV
+    aws.instance_type = "m3.medium"
+    aws.region = "us-east-1"
+    aws.security_groups = [ 'jenkins' ]
+    aws.user_data = File.read("aws/cloud-init.mime")
+    override.ssh.username = "ubuntu"
+    override.ssh.private_key_path = "~/.ssh/id_rsa"
+    aws.tags = { 
+      'Name' => 'blue.spantree.net',
+      'Hostname' => 'blue',
+      'fqdn' => 'blue.spantree.net',
+      'Role' => 'Artifact repository',
+    }
+    aws.block_device_mapping = [
+      { 
+        'DeviceName' => '/dev/sda1',
+        'Ebs.VolumeSize' => 50 
+      },
+      {
+        'DeviceName' => '/dev/sdg',
+        'Ebs.VolumeSize' => 150
+      }
+    ]
+
+  end
 
   config.vm.synced_folder ".", "/usr/local/src/project", :create => "true"
   config.vm.synced_folder "puppet", "/usr/local/etc/puppet", :create => "true"
-  #config.vm.synced_folder "~/.gnupg", "/root/.gnupg", :create => "true", :owner => "root"
 
-  config.vm.hostname = "blue.spantree.net"
-  config.vm.network :forwarded_port, host: 8080, guest: 8080
-
-  config.vm.provider :virtualbox do |v, override|
-    override.vm.network :private_network, ip: "192.168.80.100"
-    v.customize ["modifyvm", :id, "--memory", 2048]
-  end
-
-  config.vm.provision :shell, :path => "shell/initial-setup.sh", :args => "/vagrant/shell"
-  config.vm.provision :shell, :path => "shell/update-puppet.sh", :args => "/vagrant/shell"
+  config.vm.provision :shell, :path => "shell/os-detect-setup.sh"
+  config.vm.provision :shell, :path => "shell/initial-setup.sh"
+  config.vm.provision :shell, :path => "shell/update-puppet.sh"
   config.vm.provision :shell, :path => "shell/librarian-puppet-vagrant.sh", :args => "/vagrant/shell"
 
   config.vm.provision :puppet do |puppet|

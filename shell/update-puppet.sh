@@ -1,10 +1,8 @@
 #!/bin/bash
 
-SCRIPT_ROOT=$(echo "$1")
-
-OS=$(/bin/bash $SCRIPT_ROOT/os-detect.sh ID)
-CODENAME=$(/bin/bash $SCRIPT_ROOT/os-detect.sh CODENAME)
-RELEASE=$(/bin/bash $SCRIPT_ROOT/os-detect.sh RELEASE)
+OS=$(/bin/bash /tmp/os-detect.sh ID)
+CODENAME=$(/bin/bash /tmp/os-detect.sh CODENAME)
+RELEASE=$(/bin/bash /tmp/os-detect.sh RELEASE)
 
 if [[ ! -f /var/puppet-init/update-puppet ]]; then
     if [ "$OS" == 'debian' ] || [ "$OS" == 'ubuntu' ]; then

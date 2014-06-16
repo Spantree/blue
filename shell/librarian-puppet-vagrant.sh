@@ -2,8 +2,8 @@
 
 SCRIPT_ROOT=$(echo "$1")
 
-OS=$(/bin/bash $SCRIPT_ROOT/os-detect.sh ID)
-CODENAME=$(/bin/bash $SCRIPT_ROOT/os-detect.sh CODENAME)
+OS=$(/bin/bash /tmp/os-detect.sh ID)
+CODENAME=$(/bin/bash /tmp/os-detect.sh CODENAME)
 
 # Directory in which librarian-puppet should manage its modules directory
 PUPPET_DIR=/etc/puppet/
@@ -70,8 +70,8 @@ fi
 cd "$PUPPET_DIR"
 
 if [[ ! -f /var/puppet-init/librarian-puppet-installed ]]; then
-    echo 'Installing librarian-puppet'
-    gem install librarian-puppet
+    echo 'Installing librarian-puppet 1.0.3 because 1.1.x is causing some issues at the moment'
+    gem install librarian-puppet -v1.0.3
     echo 'Finished installing librarian-puppet'
 
     echo 'Running initial librarian-puppet'
