@@ -1,2 +1,2 @@
-#### Sonar server configuration
+#### Nexus server configuration
 
