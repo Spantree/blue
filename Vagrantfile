@@ -3,6 +3,13 @@
 
 ENV['VAGRANT_DEFAULT_PROVIDER'] = "aws"
 
+puts "Initializing user data files"
+system "./bin/setup-user-data.sh"
+if $? != 0
+  puts "Failed to create user-data file"
+  abort
+end
+
 Vagrant.configure("2") do |config|
 
   config.vm.box = "dummy"
