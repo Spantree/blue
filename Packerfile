@@ -1,0 +1,71 @@
+{
+  "builders": [
+    {
+      "access_key": "{{user `aws_access_key`}}",
+      "ami_description": "ubuntu 14.04 amd64 spantree ",
+      "ami_name": "ubuntu 14.04 amd64 spantree {{isotime | clean_ami_name}}",
+      "instance_type": "m3.medium",
+      "region": "us-east-1",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "source_ami": "ami-018c9568",
+      "ssh_username": "ubuntu",
+      "tags": {
+        "Arch": "x64",
+        "OS_Version": "Ubuntu",
+        "Release": "trusty",
+        "Role": "nexus repository",
+        "Vendor": "spantree"
+      },
+      "type": "amazon-ebs",
+      "user_data_file": "./aws/cloud-init.mime"
+    }
+  ],
+  "post-processors": null,
+  "provisioners": [
+    {
+      "override": {
+        "amazon-ebs": {
+          "execute_command": "sudo -S sh '{{.Path}}'"
+        }
+      },
+      "type": "shell",
+      "inline": [
+        "mkdir -p /usr/local/src/project",
+        "mkdir -p /usr/local/etc/puppet",
+        "chown -R ubuntu /usr/local/src/project",
+        "chown -R ubuntu /usr/local/etc/puppet"
+      ]
+    },
+    {
+      "destination": "/usr/local/src/project",
+      "source": "./",
+      "type": "file"
+    },
+    {
+      "destination": "/usr/local/etc/puppet",
+      "source": "./puppet/.",
+      "type": "file"
+    },
+    {
+      "override": {
+        "amazon-ebs": {
+          "execute_command": "sudo -S sh '{{.Path}}'"
+        }
+      },
+      "type": "shell",
+      "inline": [
+        "chmod a+x /usr/local/src/project/shell/*",
+        "/usr/local/src/project/shell/os-detect-setup.sh",
+        "/usr/local/src/project/shell/initial-setup.sh",
+        "/usr/local/src/project/shell/update-puppet.sh",
+        "/usr/local/src/project/shell/librarian-puppet-vagrant.sh /usr/local/src/project/shell",
+        "puppet apply --verbose --debug --modulepath=/etc/puppet/modules:/usr/local/etc/puppet/modules --hiera_config /usr/local/src/project/hiera.yaml /usr/local/src/project/puppet/manifests/default.pp"
+      ]
+    }
+  ],
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
+  }
+}
+
