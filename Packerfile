@@ -2,7 +2,7 @@
   "builders": [
     {
       "access_key": "{{user `aws_access_key`}}",
-      "ami_description": "ubuntu 14.04 amd64 spantree ",
+      "ami_description": "ubuntu 14.04 amd64 spantree nexus",
       "ami_name": "ubuntu 14.04 amd64 spantree {{isotime | clean_ami_name}}",
       "instance_type": "m3.medium",
       "region": "us-east-1",
@@ -10,6 +10,7 @@
       "source_ami": "ami-018c9568",
       "ssh_username": "ubuntu",
       "tags": {
+        "Name": "Nexus server",
         "Arch": "x64",
         "OS_Version": "Ubuntu",
         "Release": "trusty",
