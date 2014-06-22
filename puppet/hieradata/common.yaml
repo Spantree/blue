@@ -9,7 +9,7 @@ classes:
 
 nexus::version: '2.8.1'
 nexus::revision: '01'
-nexus::nexus_root: '/srv'
+nexus::nexus_root: '/srv/nexus'
 nexus::nexus_context: "/"
 
 nginx::mail: false
@@ -26,8 +26,8 @@ nginx::nginx_vhosts:
     ensure: present
     proxy: 'http://nexus-real'
     #rewrite_to_https: true
-#    rewrite_rules:
-#      - '^/$ http://$host/nexus'
+    #rewrite_rules:
+    #  - '^/$ http://$host/nexus'
     server_name:
       - localhost
       - blue.spantree.net
