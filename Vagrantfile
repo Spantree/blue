@@ -9,11 +9,12 @@ if $? != 0
   abort "Failed to create user-data file"
 end
 
-if (!ENV["AWS_ACCESS_KEY_ID"].nil? || !ENV['AWS_SECRET_ACCESS_KEY'].nil?)
-  abort("$AWS_ACCESS_KEY_ID or $AWS_SECRET_ACCESS_KEY are not defined")
+if (ENV['AWS_ACCESS_KEY_ID'].empty? || ENV['AWS_SECRET_ACCESS_KEY'].empty?)
+  abort("AWS_ACCESS_KEY_ID #{ENV['AWS_ACCESS_KEY_ID']} or AWS_SECRET_ACCESS_KEY #{ENV['AWS_SECRET_ACCESS_KEY']} are not defined")
 end
 
 Vagrant.configure("2") do |config|
+  # config.vm.box = "ubuntu/trusty64"
   config.vm.box = "dummy"
   config.vm.provider "aws" do |aws, override|
     aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']
