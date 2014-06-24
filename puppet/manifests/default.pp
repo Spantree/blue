@@ -16,6 +16,6 @@ node default {
     ensure  => present,
     command => "$task 2>&1 > /var/log/backup-to-s3.log",
     user    => 'root',
-    hour    => ['0'],
+    minute    => ['0'],
   }
 }
