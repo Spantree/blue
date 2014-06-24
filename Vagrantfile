@@ -6,12 +6,14 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] = "aws"
 puts "Initializing user data files"
 system "./bin/setup-user-data.sh"
 if $? != 0
-  puts "Failed to create user-data file"
-  abort
+  abort "Failed to create user-data file"
+end
+
+if (!ENV["AWS_ACCESS_KEY_ID"].nil? || !ENV['AWS_SECRET_ACCESS_KEY'].nil?)
+  abort("$AWS_ACCESS_KEY_ID or $AWS_SECRET_ACCESS_KEY are not defined")
 end
 
 Vagrant.configure("2") do |config|
-
   config.vm.box = "dummy"
   config.vm.provider "aws" do |aws, override|
     aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']
@@ -25,16 +27,16 @@ Vagrant.configure("2") do |config|
     aws.user_data = File.read("aws/cloud-init.mime")
     override.ssh.username = "ubuntu"
     override.ssh.private_key_path = "~/.ssh/id_rsa"
-    aws.tags = { 
+    aws.tags = {
       'Name' => 'blue.spantree.net',
       'Hostname' => 'blue',
       'fqdn' => 'blue.spantree.net',
       'Role' => 'Artifact repository',
     }
     aws.block_device_mapping = [
-      { 
+      {
         'DeviceName' => '/dev/sda1',
-        'Ebs.VolumeSize' => 50 
+        'Ebs.VolumeSize' => 50
       },
       {
         'DeviceName' => '/dev/sdg',
